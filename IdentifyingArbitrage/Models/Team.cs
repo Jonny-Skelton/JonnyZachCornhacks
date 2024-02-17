@@ -13,12 +13,12 @@ public class Team
         }
     }
 
-    // public Team(string name, int americanOdds)
-    // {
-    //     // Corrected assignments
-    //     Name = name;
-    //     AmericanOdds = americanOdds;
-    // }
+    public Team(string name, int americanOdds)
+    {
+        // Corrected assignments
+        Name = name;
+        AmericanOdds = americanOdds;
+    }
 
     private double CalculateImplied()
     {

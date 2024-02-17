@@ -1,4 +1,4 @@
-@page "/games"
+@page "/n"
 @using IdentifyingArbitrage.Models
 
 <div>
@@ -22,8 +22,6 @@
     {
         // Create sample teams and initialize the game
         var teams = new List<Team>();
-        teams.Add(new Team { Name = "TeamA", AmericanOdds = -150 });
-        teams.Add(new Team { Name = "TeamB", AmericanOdds = 200 });
 
         game = new Game(teams);
     }

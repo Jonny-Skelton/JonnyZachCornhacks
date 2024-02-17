@@ -1,11 +1,14 @@
 @page "/games"
+@using IdentifyingArbitrage.Models
+@using IdentifyingArbitrage.Data
+@inject DataManager DataManager
 @attribute [StreamRendering]
 
 <PageTitle>Games</PageTitle>
 
 <h1>Upcoming Games</h1>
 
-@if (forecasts == null)
+@if (upcomingGames == null)
 {
     <p>
         <em>Loading...</em>
@@ -14,52 +17,62 @@
 else
 {
     <table class="table">
-        <thead>
-        <tr>
-            <th>Game</th>
-            <th>Date/Time</th>
-            <th></th>
-            <th>Odds</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var forecast in forecasts)
+    <thead>
+    <tr>
+        <th>Game</th>
+        <th>Date/Time</th>
+        <th>Line</th>
+        <th>Implied Odds</th>
+    </tr>
+    </thead>
+        @foreach (var game in upcomingGames)
         {
+            <tbody>
             <tr>
-                <td>@forecast.Date.ToShortDateString()</td>
-                <td>@forecast.TemperatureC</td>
-                <td>@forecast.TemperatureF</td>
-                <td>@forecast.Summary</td>
+                <td>@game.Teams[0].Name</td>
+                <td></td>
+                <td>@game.Teams[0].AmericanOdds</td>
+                <td>@game.Teams[0].ImpliedOdds</td>
             </tr>
+            <tr>
+                <td>vs</td>
+            </tr>
+            <tr>
+                <td>@game.Teams[1].Name</td>
+                <td></td>
+                <td>@game.Teams[1].AmericanOdds</td>
+                <td>@game.Teams[1].ImpliedOdds</td>
+            </tr>
+            </tbody>
         }
-        </tbody>
     </table>
 }
 
-@code {
-    private WeatherForecast[]? forecasts;
+<style>
 
+</style>
+
+@code {
+    private Game[] upcomingGames = Array.Empty<Game>();
+    
     protected override async Task OnInitializedAsync()
     {
         // Simulate asynchronous loading to demonstrate streaming rendering
         await Task.Delay(500);
-
-        var startDate = DateOnly.FromDateTime(DateTime.Now);
-        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-        forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        
+        // Use Concat to create a new array with the additional elements
+        
+        upcomingGames = FetchData();
+    }
+    
+    private Game[] FetchData()
+    {
+        // Call the GetData method from DataManager
+        DataManager.GetData();
+        return upcomingGames.Concat(new[]
         {
-            Date = startDate.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = summaries[Random.Shared.Next(summaries.Length)]
+            new Game(new List<Team> { new Team("TeamA", -150), new Team("TeamB", 200) }),
+            new Game(new List<Team> { new Team("TeamC", -120), new Team("TeamD", 150) })
         }).ToArray();
     }
-
-    private class WeatherForecast
-    {
-        public DateOnly Date { get; set; }
-        public int TemperatureC { get; set; }
-        public string? Summary { get; set; }
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-    }
-
 }

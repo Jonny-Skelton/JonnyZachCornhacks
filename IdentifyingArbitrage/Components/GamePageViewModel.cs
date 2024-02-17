@@ -18,7 +18,7 @@ public class GamePageViewModel
     {
         // Sample data - replace with your actual data retrieval logic
         Games.Add(new Game(new List<Team> { new Team("TeamA", -150), new Team("TeamB", 200) }));
-        Games.Add(new Game(new List<Team> { new Team { }"TeamC", -120), new Team("TeamD", 150) }));
+        Games.Add(new Game(new List<Team> { new Team("TeamC", -120), new Team("TeamD", 150) }));
         // Add more games as needed
     }
 }
