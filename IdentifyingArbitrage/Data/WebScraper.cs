@@ -15,7 +15,7 @@ public class Webscraper
     {
         HttpClient client = new HttpClient();
         var response = await client.GetAsync(fullUrl);
-        return response;
+        return "response";
     }
 
     public IActionResult Index()
