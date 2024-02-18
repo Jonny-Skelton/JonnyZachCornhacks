@@ -12,7 +12,10 @@ public class DataHelper
             new Team(dm.AwayTeam, dm.AwayMoneyLine, dm.AwayMoneylines),
             new Team(dm.HomeTeam, dm.HomeMoneyLine, dm.HomeMoneylines)
         };
-                
+
+        teams[0].ImgUrl = dm.AwayImgUrl;
+        teams[1].ImgUrl = dm.HomeImgUrl;
+        
         return new Game
         {
             Teams = teams,

@@ -9,6 +9,9 @@ public class DataModel
     public string Time { get; set; }
     public string Date { get; set; }
     
+    public string? AwayImgUrl { get; set; }
+    public string? HomeImgUrl { get; set; }
+    
     public Dictionary<string, int> AwayMoneylines { get; set; } = new Dictionary<string, int>();
     public Dictionary<string, int> HomeMoneylines { get; set; } = new Dictionary<string, int>();
 }
