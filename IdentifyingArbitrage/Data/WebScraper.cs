@@ -18,7 +18,7 @@ public class Webscraper
         doc.LoadHtml(htmlContent);
 
         // Select the rows with the 'oddsGameRow' class
-        var gameRows = doc.DocumentNode.SelectNodes("(//tr[@class='oddsGameRow'])[position() <= 50]");
+        var gameRows = doc.DocumentNode.SelectNodes("(//tr[@class='oddsGameRow'])[position() <= 25]");
         
         List<DataModel> dataModels = new List<DataModel>();
         if (gameRows != null)

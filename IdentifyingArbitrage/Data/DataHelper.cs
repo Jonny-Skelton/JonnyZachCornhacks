@@ -9,10 +9,10 @@ public class DataHelper
     {
         List<Team> teams = new List<Team>
         {
-            new Team(dm.AwayTeam, dm.AwayMoneylines),
-            new Team(dm.HomeTeam, dm.HomeMoneylines)
+            new Team(dm.AwayTeam, dm.AwayMoneyLine, dm.AwayMoneylines),
+            new Team(dm.HomeTeam, dm.HomeMoneyLine, dm.HomeMoneylines)
         };
-
+                
         return new Game
         {
             Teams = teams,
@@ -20,5 +20,4 @@ public class DataHelper
             Time = dm.Time
         };
     }
-    
 }
