@@ -6,7 +6,7 @@ public class DataManager
 {
     //this is going to call the webscraper data into the dataModel
     private Webscraper _webscraper = new Webscraper();
-    public List<Game> GetData()
+    public List<Game> GetUpcomingGameData()
     {
         List<Game> gameData = new List<Game>();
         List<DataModel> results = new List<DataModel>();

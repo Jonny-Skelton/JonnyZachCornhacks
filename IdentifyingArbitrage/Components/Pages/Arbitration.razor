@@ -1,6 +1,7 @@
 @page "/arbitrage"
 @inject NavigationManager NavigationManager
 @using IdentifyingArbitrage.Models
+@rendermode InteractiveServer
 @inject GameService GameService
 
 <PageTitle>Calculate Arbitrage</PageTitle>
@@ -21,16 +22,16 @@
 		</thead>
 		<tbody>
 		<tr>
-			<td>@GameService.SelectedGame.Teams[0].Name</td>
-			<td><input type="number" value="@GameService.SelectedGame.Teams[0].BestOdds"/></td>
-			<td>Calculate Stake</td>
+			 <td><img src="@GameService.SelectedGame.Teams[0].ImgUrl" alt="" width="20" height="20">  @GameService.SelectedGame.Teams[0].Name</td>
+			<td><input type="number" value="@GameService.SelectedGame.Teams[0].BestOdds" readonly="true" /></td>
+				<td>$ @Math.Round(@TeamAStake, 2)</td>
 			<td>@GameService.SelectedGame.Teams[0].BestBook</td>
 			<td>Calculate based on stake and odds</td>
 		</tr>
 		<tr>
-			<td>@GameService.SelectedGame.Teams[1].Name</td>
-			<td><input type="number" value="@GameService.SelectedGame.Teams[1].BestOdds" /></td>
-			<td>Calculate Stake</td>
+			<td><img src="@GameService.SelectedGame.Teams[1].ImgUrl" alt="" width="20" height="20">  @GameService.SelectedGame.Teams[0].Name</td>
+			<td><input type="number" value="@GameService.SelectedGame.Teams[1].BestOdds" readonly="true"/></td>
+				<td>$ @Math.Round(@TeamBStake, 2)</td>
 			<td>@GameService.SelectedGame.Teams[1].BestBook</td>
 			<td>Calculate based on stake and odds</td>
 		</tr>
@@ -51,13 +52,14 @@ else
 		<tbody>
 		<tr>
 			<td>Team A</td>
-			<td><input type="number" value=""/></td>
-			<td>Calculate stake</td>
+			<td><input id="teamAoddsInput" type="number" @bind="TeamAOdds" /></td>
+				<td>$ @Math.Round(@TeamAStake, 2)</td>
 			<td>Calculate based on stake and odds</td>
 		</tr>
 		<tr>
 			<td>Team B</td>
-			<td><input type="number" value="" /></td>
+			<td><input id="teamAoddsInput" type="number" @bind="TeamBOdds" /></td>
+				<td>$ @Math.Round(@TeamBStake, 2)</td>
 			<td>Calculate based on stake and odds</td>
 		</tr>
 		</tbody>
@@ -73,34 +75,163 @@ else
 	</thead>
 	<tbody>
 	<tr>
-		<th>Total Stake: $<input type="number"/></th>
-		<th>Total Payout: $</th>
+		<th>Total Stake: $<input id="stakeInput" type="number" @bind="Stake"/></th>
+		<th>Total Payout: $ @Math.Round(@TotalPayout, 2)</th>
 	</tr>
 	<tr>
-		<th><input type="button" value="Calculate"/></th>
-		<th>Total Profit: $</th>
+		<th><input id="button" type="button" @onclick="e => CalculateArbitrage()" value="Calculate"/></th>
+		<th>Total Profit: $ @Math.Round(@TotalProfit, 2)</th>
 	</tr>
 	<tr>
 		<th></th>
-		<th>ROI:</th>
+		<th>ROI: @Math.Round(@ROI, 2)%</th>
 	</tr>
 	</tbody>
 </table>
 
-
-<style>
-
-</style>
-
 @code {
-    [Parameter] public string team1Name { get; set; }
-    [Parameter] public string team2Name { get; set; }
-    [Parameter] public double team1MoneyLine { get; set; }
-    [Parameter] public double team2MoneyLine { get; set; }
+	private double Stake;
+	private int TeamAOdds;
+	private int TeamBOdds;
+	private double TotalPayout;
+	private double TotalProfit;
+	private double ROI;
+	private double TeamAStake;
+	private double TeamBStake;
+    
 
     protected override async Task OnInitializedAsync()
     {
         // Use the captured parameters as needed
         // You can access team1Name, team2Name, team1MoneyLine, and team2MoneyLine here
+        Stake = 0;
+        TotalPayout = 0;
+        TotalProfit = 0;
+        ROI = 0;
+        TeamAStake = 0;
+        TeamBStake = 0;
+    }
+
+    public void CalculateArbitrage()
+    {
+	    if (Stake > 0)
+	    {
+		    @if (GameService.SelectedGame != null)
+		    {
+			    ArbitrageModel viewModel = new ArbitrageModel(GameService.SelectedGame, Stake);
+			    PopulateResults(viewModel);
+		    }
+		    else
+		    {
+			    Dictionary<string, int> oddsDictionaryA = new Dictionary<string, int>();
+			    Dictionary<string, int> oddsDictionaryB = new Dictionary<string, int>();
+
+			    oddsDictionaryA["N/A"] = TeamAOdds;
+			    oddsDictionaryB["N/A"] = TeamBOdds;
+
+			    List<Team> teams = new List<Team>
+			    {
+				    new Team("AwayTeam", TeamAOdds.ToString(), oddsDictionaryA),
+				    new Team("HomeTeam", TeamBOdds.ToString(), oddsDictionaryB)
+			    };
+
+			    Game game = new Game
+			    {
+				    Teams = teams,
+			    };
+
+			    ArbitrageModel viewModel = new ArbitrageModel(game, Stake);
+			    PopulateResults(viewModel);
+		    }
+	    }
+	    else
+	    {
+			//do nothing
+	    }
+	    
+    }
+
+    private void PopulateResults(ArbitrageModel vm)
+    {
+	    TotalPayout = vm.Payout;
+	    TotalProfit = vm.Payout - Stake;
+	    ROI = vm.ROI;
+	    TeamAStake = vm.AwayTeamStake;
+	    TeamBStake = vm.HomeTeamStake;
     }
 }
+
+<style>
+	h1 {
+		width: 100%;
+		text-align: center;
+		margin-top: 30px;
+		margin-left: auto;
+		margin-right: auto;
+		margin-bottom: 40px;
+	}
+
+	.table {
+		width: 80%;
+		border-collapse: collapse;
+		margin-right: auto;
+		margin-left: auto;
+		margin-bottom: 40px;
+	}
+
+		.table tbody {
+			text-align: center
+		}
+
+			.table tbody tr:hover {
+				transition: background-color 0.3s;
+				background-color: #ddd;
+			}
+
+		.table thead {
+			background-color: #f2f2f2;
+		}
+
+		.table th,
+		.table td {
+			border: 1px solid #ddd;
+			padding: 8px;
+			text-align: center;
+		}
+
+	.table2 {
+		width: 50%;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+		.table2 th {
+			padding: 10px;
+			text-align: left;
+		}
+
+		.table2 input[type="number"] {
+			border: 1px solid #ccc;
+			text-align: center;
+			padding: 8px;
+			background-color: rgba(240, 240, 240, 0.7);
+		}
+
+			.table2 input[type="number"]:hover {
+				background-color: rgba(240, 240, 240, 1);
+			}
+
+		.table2 #button {
+			border: 1px solid #ccc;
+			padding: 8px;
+			background-color: rgba(76, 175, 80, 0.6);
+			margin-left: 160px;
+			margin-top: 10px;
+		}
+
+			.table2 #button:hover {
+				transition: background-color 0.3s;
+				padding: 8px;
+				background-color: rgba(76, 175, 80, 1);
+</style>
+

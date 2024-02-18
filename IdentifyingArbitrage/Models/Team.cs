@@ -7,6 +7,8 @@ public class Team
     public string BestBook { get; set; }
     public double BestOdds { get; set; }
     
+    public string? ImgUrl { get; set; }
+    
     public double ImpliedOdds
     {
         get
@@ -26,7 +28,7 @@ public class Team
     {
         if (moneylines.Count > 0)
         {
-            var bestBookLine = moneylines.OrderByDescending(kv => Math.Abs(kv.Value)).First();
+            var bestBookLine = moneylines.OrderByDescending(kv => kv.Value).First();
             BestBook = bestBookLine.Key;
             BestOdds = bestBookLine.Value;
         }
@@ -40,14 +42,12 @@ public class Team
     private double CalculateImplied()
     {
         double implied = 0;
-        string temp = AmericanOdds.Replace("+", "");
-        double odds = double.Parse(temp);
-        if (odds > 0)
+        if (BestOdds > 0)
         {
-            implied = 100 / ((odds / 100) + 1);
+            implied = 100 / ((BestOdds / 100) + 1);
         }else
         {
-            implied = 100 / ((100/Math.Abs(odds)) + 1);
+            implied = 100 / ((100/Math.Abs(BestOdds)) + 1);
         }
         return Math.Round(implied, 2);
     }

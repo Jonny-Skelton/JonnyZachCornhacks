@@ -31,28 +31,31 @@ else
     </thead>
         @foreach (var game in upcomingGames)
         {
-            <tbody>
-            <tr>
-                <td>@game.Teams[0].Name</td>
-                <td></td>
-                <td>@game.Teams[0].AmericanOdds</td>
-                <td>@Math.Round(@game.Teams[0].ImpliedOdds, 2) %</td>
-            </tr>
-            <tr>
-                <td>vs</td>
-                <td>@game.Date at @game.Time</td>
-                <td></td>
-                <td>
-                   <input type="button" @onclick="(e => PopulateVariables(e, game))" value="Calculate Arbitrage" />
-	            </td>
-            </tr>
-            <tr>
-                <td>@game.Teams[1].Name</td>
-                <td> </td>
-                <td>@game.Teams[1].AmericanOdds</td>
-                <td>@Math.Round(@game.Teams[1].ImpliedOdds, 2) %</td>
-            </tr>
-            </tbody>
+            @if (game.Teams[0].ImpliedOdds != 0)
+            {
+                <tbody>
+                <tr>
+                    <td><img src="@game.Teams[0].ImgUrl" alt="" width="20" height="20"> @game.Teams[0].Name</td>
+                    <td></td>
+                    <td>@game.Teams[0].BestOdds</td>
+                    <td>@Math.Round(@game.Teams[0].ImpliedOdds, 2) %</td>
+                </tr>
+                <tr>
+                    <td>vs</td>
+                    <td>@game.Date at @game.Time</td>
+                    <td>Arbitrage: @game.IsArbitrage</td>
+                    <td>
+                        <input type="button" @onclick="(e => PopulateVariables(e, game))" value="Calculate Arbitrage"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td><img src="@game.Teams[1].ImgUrl" alt="" width="20" height="20"> @game.Teams[1].Name</td>
+                    <td> </td>
+                    <td>@game.Teams[1].BestOdds</td>
+                    <td>@Math.Round(@game.Teams[1].ImpliedOdds, 2) %</td>
+                </tr>
+                </tbody>
+            }
         }
     </table>
 }
@@ -78,8 +81,8 @@ else
     private Game[] FetchData()
     {
         // Call the GetData method from DataManager
-        DataManager.GetData();
-        return DataManager.GetData().ToArray();
+        DataManager.GetUpcomingGameData();
+        return DataManager.GetUpcomingGameData().ToArray();
 
     }
 
@@ -118,6 +121,7 @@ background-color: #f2f2f2;
 /* Hover effect on rows */
 .table tbody tr:hover {
 background-color: #ddd;
+transition: background-color 0.3s;
 }
 
 /* Button styles */
@@ -137,5 +141,6 @@ cursor: pointer;
 /* Button hover effect */
 .button:hover {
 background-color: #0056b3;
+transition: background-color 0.3s;
 }
 </style>

@@ -48,7 +48,9 @@ public class Webscraper
                     ? WebUtility.HtmlDecode(moneylineNodes[1].InnerText.Trim())
                     : "";
                 
-                //individual book line
+                var teamLogoNodes = row.SelectNodes(".//div[@class='div-cell teams-div']//a/img");
+                string? awayTeamLogo = teamLogoNodes != null && teamLogoNodes.Count > 0 ? teamLogoNodes[0].Attributes["src"]?.Value : "";
+                string? homeTeamLogo = teamLogoNodes != null && teamLogoNodes.Count > 1 ? teamLogoNodes[1].Attributes["src"]?.Value : "";
                 
                 DataModel dataModel = new DataModel
                 {
@@ -57,7 +59,9 @@ public class Webscraper
                     AwayMoneyLine = awayMoneyline,
                     HomeMoneyLine = homeMoneyline,
                     Time = time,
-                    Date = date
+                    Date = date,
+                    AwayImgUrl = awayTeamLogo,
+                    HomeImgUrl = homeTeamLogo
                 };
 
                 // Extract individual sportsbook moneylines

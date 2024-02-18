@@ -18,6 +18,4 @@ public class Game
             }
         }
 
-        // Constructor to initialize the teams and odds
-
 }
