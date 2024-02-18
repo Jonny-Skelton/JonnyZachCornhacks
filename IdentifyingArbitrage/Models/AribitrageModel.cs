@@ -31,10 +31,12 @@ public class ArbitrageModel
         if (GameModel.Teams[0].BestOdds > 0)
         {
             Payout = ((GameModel.Teams[0].BestOdds + 100) / 100) * AwayTeamStake;
+            Payout += ((100 / GameModel.Teams[1].BestOdds) + 1) * HomeTeamStake;
         }
         else
         {
             Payout = ((100/GameModel.Teams[0].BestOdds) + 1) * AwayTeamStake;
+            Payout += ((GameModel.Teams[1].BestOdds + 100) / 100) * HomeTeamStake;
         }
     }
     
