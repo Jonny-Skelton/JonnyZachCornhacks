@@ -58,6 +58,7 @@ else
 		<tr>
 			<td>Team B</td>
 			<td><input type="number" value="" /></td>
+			<td>Calculate stake</td>
 			<td>Calculate based on stake and odds</td>
 		</tr>
 		</tbody>
@@ -73,22 +74,93 @@ else
 	</thead>
 	<tbody>
 	<tr>
-		<th>Total Stake: $<input type="number"/></th>
-		<th>Total Payout: $</th>
+		<th id="numInput">Total Stake: $<input type="number"/></th>
+			<th class="secondColumn">Total Payout: $</th>
 	</tr>
 	<tr>
-		<th><input type="button" value="Calculate"/></th>
-		<th>Total Profit: $</th>
+		<th><input id="button" type="button" value="Calculate"/></th>
+		<th class="secondColumn">Total Profit: $</th>
 	</tr>
 	<tr>
 		<th></th>
-		<th>ROI:</th>
+			<th class="secondColumn">ROI:</th>
 	</tr>
 	</tbody>
 </table>
 
 <style>
+	h1 {
+		width: 100%;
+		text-align: center;
+		margin-top: 30px;
+		margin-left: auto;
+		margin-right: auto;
+		margin-bottom:40px;
+	}
 
+	.table {
+		width: 80%;
+		border-collapse: collapse;
+		margin-right: auto;
+		margin-left: auto;
+		margin-bottom: 40px;
+	}
+
+	.table tbody{
+		text-align: center
+	}
+
+	.table tbody tr:hover {
+		transition: background-color 0.3s;
+		background-color: #ddd;
+	}
+
+	.table thead{
+		background-color: #f2f2f2;
+	}
+
+		.table th,
+		.table td {
+			border: 1px solid #ddd;
+			padding: 8px;
+			text-align: center;
+		}
+
+	.table2 {
+		width: 50%;
+		margin-left: auto;
+		margin-right:auto;
+	}
+
+		.table2 th {
+			padding:10px;
+			text-align: left;
+		}
+
+		.table2 input[type="number"] {
+			border: 1px solid #ccc;
+			text-align: center;
+			padding: 8px;
+			background-color: rgba(240, 240, 240, 0.7);
+		}
+
+		.table2 input[type="number"]:hover{
+			background-color: rgba(240, 240, 240, 1);
+		}
+
+		.table2 #button {
+			border: 1px solid #ccc;
+			padding: 8px;
+			background-color: rgba(76, 175, 80, 0.6);
+			margin-left: 160px;
+			margin-top: 10px;
+			
+		}
+
+		.table2 #button:hover{
+			transition: background-color 0.3s;
+			padding: 8px;
+			background-color: rgba(76, 175, 80, 1);
 </style>
 
 @code {
