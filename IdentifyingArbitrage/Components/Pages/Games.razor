@@ -4,6 +4,7 @@
 @using System.Runtime.InteropServices
 @inject DataManager DataManager
 @inject NavigationManager NavigationManager
+@inject GameService GameService
 @attribute [StreamRendering]
 
 <PageTitle>Games</PageTitle>
@@ -61,17 +62,20 @@ else
 
 @code {
 
-    private Game[] upcomingGames = Array.Empty<Game>();
+    private Game[]? upcomingGames;
     
     protected override async Task OnInitializedAsync()
     {
         // Simulate asynchronous loading to demonstrate streaming rendering
         await Task.Delay(500);
-        
-        
+
+        upcomingGames = GameService.GetUpcomingGames();
         // Use Concat to create a new array with the additional elements
-        
-        upcomingGames = FetchData();
+        if (upcomingGames == null)
+        {
+            upcomingGames = FetchData();
+            GameService.SetUpcomingGames(upcomingGames);
+        }
     }
     
     private Game[] FetchData()
