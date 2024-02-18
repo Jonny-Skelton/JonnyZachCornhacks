@@ -68,11 +68,6 @@ else
     private Game[] FetchData()
     {
         // Call the GetData method from DataManager
-        DataManager.GetData();
-        return upcomingGames.Concat(new[]
-        {
-            new Game(new List<Team> { new Team("TeamA", -150), new Team("TeamB", 200) }),
-            new Game(new List<Team> { new Team("TeamC", -120), new Team("TeamD", 150) })
-        }).ToArray();
+        return DataManager.GetData().ToArray();
     }
 }

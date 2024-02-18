@@ -7,7 +7,9 @@ public class Game
 {
         public List<Team> Teams { get; set; }
         
-        public DateTime dateTime { get; set; }
+        public string Date { get; set; }
+        public string Time { get; set; }
+
         public bool IsArbitrage
         {
             get
@@ -17,9 +19,5 @@ public class Game
         }
 
         // Constructor to initialize the teams and odds
-        public Game(List<Team> teams)
-        {
-            Teams = teams ?? throw new ArgumentNullException(nameof(teams));
-        }
 
 }
