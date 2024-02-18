@@ -1,0 +1,21 @@
+﻿@page "/arbitration"
+@inject NavigationManager NavigationManager
+
+<PageTitle>Arbitration Details</PageTitle>
+
+@if (NavigationManager.Uri.Contains("?"))
+{
+	var queryString = NavigationManager.Uri.Split('?')[1];
+	var parameters = queryString.Split('&');
+	if (parameters.Length >= 2)
+	{
+		var teamA = Uri.UnescapeDataString(parameters[0].Split('=')[1]);
+		var teamB = Uri.UnescapeDataString(parameters[1].Split('=')[1]);
+		<p>Team A: @teamA</p>
+		<p>Team B: @teamB</p>
+	}
+	else
+	{
+		<p>Invalid query string</p>
+	}
+}
