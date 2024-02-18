@@ -1,6 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentifyingArbitrage", "IdentifyingArbitrage\IdentifyingArbitrage.csproj", "{54F2DA0C-BDD9-4B32-A89F-5F49D5629E0C}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34511.84
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentifyingArbitrage", "IdentifyingArbitrage\IdentifyingArbitrage.csproj", "{54F2DA0C-BDD9-4B32-A89F-5F49D5629E0C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +15,8 @@ Global
 		{54F2DA0C-BDD9-4B32-A89F-5F49D5629E0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54F2DA0C-BDD9-4B32-A89F-5F49D5629E0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54F2DA0C-BDD9-4B32-A89F-5F49D5629E0C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,92 @@
+@page "/games"
+@using IdentifyingArbitrage.Models
+@using IdentifyingArbitrage.Data
+@inject DataManager DataManager
+@inject NavigationManager NavigationManager
+@attribute [StreamRendering]
+
+<PageTitle>Games</PageTitle>
+
+<h1>Upcoming Games</h1>
+
+@if (upcomingGames == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+    <thead>
+    <tr>
+        <th>Game</th>
+        <th>Date/Time</th>
+        <th>Line</th>
+        <th>Implied Odds</th>
+    </tr>
+    </thead>
+        @foreach (var game in upcomingGames)
+        {
+            <tbody>
+            <tr>
+                <td>@game.Teams[0].Name</td>
+                <td></td>
+                <td>@game.Teams[0].AmericanOdds</td>
+                <td>@game.Teams[0].ImpliedOdds</td>
+            </tr>
+            <tr>
+            <td>vs</td>
+            <td>
+	            <a href="arbitration"><button @onclick="(e => PopulateVariables(game))" value="Arbitration">Go to Arbitration Page</button></a>
+	            </td>
+            </tr>
+            <tr>
+                <td>@game.Teams[1].Name</td>
+                <td></td>
+                <td>@game.Teams[1].AmericanOdds</td>
+                <td>@game.Teams[1].ImpliedOdds</td>
+            </tr>
+            </tbody>
+        }
+    </table>
+}
+
+<style>
+
+</style>
+
+@code {
+
+    private Game[] upcomingGames = Array.Empty<Game>();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulate asynchronous loading to demonstrate streaming rendering
+        await Task.Delay(500);
+        
+        // Use Concat to create a new array with the additional elements
+        
+        upcomingGames = FetchData();
+    }
+    
+    private Game[] FetchData()
+    {
+        // Call the GetData method from DataManager
+        DataManager.GetData();
+        return upcomingGames.Concat(new[]
+        {
+            new Game(new List<Team> { new Team("TeamA", -150), new Team("TeamB", 200) }),
+            new Game(new List<Team> { new Team("TeamC", -120), new Team("TeamD", 150) })
+        }).ToArray();
+
+    }
+
+    private void PopulateVariables(Game game)
+    {
+	    var team1Name = game.Teams[0].Name;
+	    var team2Name = game.Teams[1].Name;
+	    var team1MoneyLine = game.Teams[0].ImpliedOdds;
+	    var team2MoneyLine = game.Teams[1].ImpliedOdds;
+    }
+}
