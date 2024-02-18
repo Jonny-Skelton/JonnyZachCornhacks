@@ -61,25 +61,3 @@ public class Webscraper
         }
     }
 }
-//     
-//     private List<string> ParseHtml(string html)
-//     {
-//         HtmlDocument htmlDoc = new HtmlDocument();
-//         htmlDoc.LoadHtml(html);
-//     
-//         var programmerLinks = htmlDoc.DocumentNode.Descendants("li")
-//             .Where(node => !node.GetAttributeValues("class", "").Contains("tocsection"))
-//             .ToList();
-//     
-//         List<string> coverLink = new List<string>();
-//     
-//         foreach (var link in programmerLinks)
-//         {
-//             if (link.FirstChild.Attributes.Count > 0)
-//                 coverLink.Add("https://www.covers.com/sport/basketball/ncaab/odds/" +
-//                               link.FirstChild.Attributes[0].Value);
-//         }
-//     
-//         return coverLink;
-//     }
-//}
