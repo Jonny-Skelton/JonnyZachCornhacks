@@ -1,6 +1,7 @@
 @page "/arbitrage"
 @inject NavigationManager NavigationManager
 @using IdentifyingArbitrage.Models
+@rendermode InteractiveServer
 @inject GameService GameService
 
 <PageTitle>Calculate Arbitrage</PageTitle>
@@ -21,16 +22,16 @@
 		</thead>
 		<tbody>
 		<tr>
-			<td>@GameService.SelectedGame.Teams[0].Name</td>
-			<td><input type="number" value="@GameService.SelectedGame.Teams[0].BestOdds"/></td>
-			<td>Calculate Stake</td>
+			 <td><img src="@GameService.SelectedGame.Teams[0].ImgUrl" alt="" width="20" height="20">  @GameService.SelectedGame.Teams[0].Name</td>
+			<td><input type="number" value="@GameService.SelectedGame.Teams[0].BestOdds" readonly="true" /></td>
+			<td>$ @TeamAStake</td>
 			<td>@GameService.SelectedGame.Teams[0].BestBook</td>
 			<td>Calculate based on stake and odds</td>
 		</tr>
 		<tr>
-			<td>@GameService.SelectedGame.Teams[1].Name</td>
-			<td><input type="number" value="@GameService.SelectedGame.Teams[1].BestOdds" /></td>
-			<td>Calculate Stake</td>
+			<td><img src="@GameService.SelectedGame.Teams[1].ImgUrl" alt="" width="20" height="20">  @GameService.SelectedGame.Teams[0].Name</td>
+			<td><input type="number" value="@GameService.SelectedGame.Teams[1].BestOdds" readonly="true"/></td>
+			<td>$ @TeamBStake</td>
 			<td>@GameService.SelectedGame.Teams[1].BestBook</td>
 			<td>Calculate based on stake and odds</td>
 		</tr>
@@ -51,14 +52,14 @@ else
 		<tbody>
 		<tr>
 			<td>Team A</td>
-			<td><input type="number" value=""/></td>
-			<td>Calculate stake</td>
+			<td><input id="teamAoddsInput" type="number" @bind="TeamAOdds" /></td>
+			<td>$ @TeamAStake</td>
 			<td>Calculate based on stake and odds</td>
 		</tr>
 		<tr>
 			<td>Team B</td>
-			<td><input type="number" value="" /></td>
-			<td>Calculate stake</td>
+			<td><input id="teamAoddsInput" type="number" @bind="TeamBOdds" /></td>
+			<td>$ @TeamBStake</td>
 			<td>Calculate based on stake and odds</td>
 		</tr>
 		</tbody>
@@ -74,19 +75,91 @@ else
 	</thead>
 	<tbody>
 	<tr>
-		<th id="numInput">Total Stake: $<input type="number"/></th>
-			<th class="secondColumn">Total Payout: $</th>
+		<th>Total Stake: $<input id="stakeInput" type="number" @bind="Stake"/></th>
+		<th>Total Payout: $ @TotalPayout</th>
 	</tr>
 	<tr>
-		<th><input id="button" type="button" value="Calculate"/></th>
-		<th class="secondColumn">Total Profit: $</th>
+		<th><input type="button" @onclick="e => CalculateArbitrage()" value="Calculate"/></th>
+		<th>Total Profit: $ @TotalProfit</th>
 	</tr>
 	<tr>
 		<th></th>
-			<th class="secondColumn">ROI:</th>
+		<th>ROI: $ @ROI</th>
 	</tr>
 	</tbody>
 </table>
+
+@code {
+	private double Stake;
+	private int TeamAOdds;
+	private int TeamBOdds;
+	private double TotalPayout;
+	private double TotalProfit;
+	private double ROI;
+	private double TeamAStake;
+	private double TeamBStake;
+    
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Use the captured parameters as needed
+        // You can access team1Name, team2Name, team1MoneyLine, and team2MoneyLine here
+        Stake = 0;
+        TotalPayout = 0;
+        TotalProfit = 0;
+        ROI = 0;
+        TeamAStake = 0;
+        TeamBStake = 0;
+    }
+
+    public void CalculateArbitrage()
+    {
+	    if (Stake > 0)
+	    {
+		    @if (GameService.SelectedGame != null)
+		    {
+			    ArbitrageModel viewModel = new ArbitrageModel(GameService.SelectedGame, Stake);
+			    PopulateResults(viewModel);
+		    }
+		    else
+		    {
+			    Dictionary<string, int> oddsDictionaryA = new Dictionary<string, int>();
+			    Dictionary<string, int> oddsDictionaryB = new Dictionary<string, int>();
+
+			    oddsDictionaryA["N/A"] = TeamAOdds;
+			    oddsDictionaryB["N/A"] = TeamBOdds;
+
+			    List<Team> teams = new List<Team>
+			    {
+				    new Team("AwayTeam", TeamAOdds.ToString(), oddsDictionaryA),
+				    new Team("HomeTeam", TeamBOdds.ToString(), oddsDictionaryB)
+			    };
+
+			    Game game = new Game
+			    {
+				    Teams = teams,
+			    };
+
+			    ArbitrageModel viewModel = new ArbitrageModel(game, Stake);
+			    PopulateResults(viewModel);
+		    }
+	    }
+	    else
+	    {
+			//do nothing
+	    }
+	    
+    }
+
+    private void PopulateResults(ArbitrageModel vm)
+    {
+	    TotalPayout = vm.Payout;
+	    TotalProfit = vm.Payout - Stake;
+	    ROI = vm.ROI;
+	    TeamAStake = vm.AwayTeamStake;
+	    TeamBStake = vm.HomeTeamStake;
+    }
+}
 
 <style>
 	h1 {
@@ -95,7 +168,7 @@ else
 		margin-top: 30px;
 		margin-left: auto;
 		margin-right: auto;
-		margin-bottom:40px;
+		margin-bottom: 40px;
 	}
 
 	.table {
@@ -106,18 +179,18 @@ else
 		margin-bottom: 40px;
 	}
 
-	.table tbody{
-		text-align: center
-	}
+		.table tbody {
+			text-align: center
+		}
 
-	.table tbody tr:hover {
-		transition: background-color 0.3s;
-		background-color: #ddd;
-	}
+			.table tbody tr:hover {
+				transition: background-color 0.3s;
+				background-color: #ddd;
+			}
 
-	.table thead{
-		background-color: #f2f2f2;
-	}
+		.table thead {
+			background-color: #f2f2f2;
+		}
 
 		.table th,
 		.table td {
@@ -129,11 +202,11 @@ else
 	.table2 {
 		width: 50%;
 		margin-left: auto;
-		margin-right:auto;
+		margin-right: auto;
 	}
 
 		.table2 th {
-			padding:10px;
+			padding: 10px;
 			text-align: left;
 		}
 
@@ -144,9 +217,9 @@ else
 			background-color: rgba(240, 240, 240, 0.7);
 		}
 
-		.table2 input[type="number"]:hover{
-			background-color: rgba(240, 240, 240, 1);
-		}
+			.table2 input[type="number"]:hover {
+				background-color: rgba(240, 240, 240, 1);
+			}
 
 		.table2 #button {
 			border: 1px solid #ccc;
@@ -154,24 +227,10 @@ else
 			background-color: rgba(76, 175, 80, 0.6);
 			margin-left: 160px;
 			margin-top: 10px;
-			
 		}
 
-		.table2 #button:hover{
-			transition: background-color 0.3s;
-			padding: 8px;
-			background-color: rgba(76, 175, 80, 1);
+			.table2 #button:hover {
+				transition: background-color 0.3s;
+				padding: 8px;
+				background-color: rgba(76, 175, 80, 1);
 </style>
-
-@code {
-    [Parameter] public string team1Name { get; set; }
-    [Parameter] public string team2Name { get; set; }
-    [Parameter] public double team1MoneyLine { get; set; }
-    [Parameter] public double team2MoneyLine { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        // Use the captured parameters as needed
-        // You can access team1Name, team2Name, team1MoneyLine, and team2MoneyLine here
-    }
-}
