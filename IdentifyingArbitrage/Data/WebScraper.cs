@@ -1,39 +1,37 @@
+using System.Net;
+using IdentifyingArbitrage.Models;
+
 namespace IdentifyingArbitrage.Data;
 using HtmlAgilityPack;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using System.Net;
-using System.Text;
-using System.IO;
-using Microsoft.AspNetCore.Mvc;
-using System.Xml;
+
 
 public class Webscraper
 {
-    public void ScrapeData()
+    public List<DataModel> ScrapeData()
     {
-        // Replace this link with the actual link you want to scrape
         string url = "https://www.covers.com/sport/basketball/ncaab/odds";
 
-        // Make an HTTP request to the webpage
-        //string htmlContent = ;
-
-        // Load the HTML document
         HtmlDocument doc = new HtmlDocument();
-        doc.LoadHtml(GetHtmlContent(url));
+
+        string htmlContent = GetHtmlContent(url);
+        doc.LoadHtml(htmlContent);
 
         // Select the rows with the 'oddsGameRow' class
-        var gameRows = doc.DocumentNode.SelectNodes("//tr[@class='oddsGameRow']");
-
+        var gameRows = doc.DocumentNode.SelectNodes("(//tr[@class='oddsGameRow'])[position() <= 50]");
+        
+        List<DataModel> dataModels = new List<DataModel>();
         if (gameRows != null)
         {
             foreach (var row in gameRows)
             {
                 // Extract date and time
-                var dateTimeNode = row.SelectSingleNode(".//div[@class='td-cell game-time']/span[2]");
-                string dateTime = dateTimeNode != null ? dateTimeNode.InnerText.Trim() : "";
-
+                //var dateTimeNode = row.SelectSingleNode(".//div[@class='td-cell game-time']/span[2]");
+                var dateTimeNode = row.SelectNodes(".//div[@class='td-cell game-time']/span");
+                string date = dateTimeNode != null ? dateTimeNode[0].InnerText.Trim() : "";
+                date = date.Replace(",&nbsp;", "");
+                string time = dateTimeNode != null ? dateTimeNode[1].InnerText.Trim() : "";
+                
                 // Extract team names
                 var teamNodes = row.SelectNodes(".//div[@class='div-cell teams-div']//a/strong");
                 string awayTeam = teamNodes != null && teamNodes.Count > 0 ? teamNodes[0].InnerText.Trim() : "";
@@ -41,18 +39,57 @@ public class Webscraper
 
                 // Extract moneylines
                 var moneylineNodes = row.SelectNodes(".//span[@class='American __american']");
-                string awayMoneyline = moneylineNodes != null && moneylineNodes.Count > 0 ? moneylineNodes[0].InnerText.Trim() : "";
-                string homeMoneyline = moneylineNodes != null && moneylineNodes.Count > 1 ? moneylineNodes[1].InnerText.Trim() : "";
 
-                // Print or process the collected data
-                Console.WriteLine($"Date/Time: {dateTime}");
-                Console.WriteLine($"Away Team: {awayTeam}, Moneyline: {awayMoneyline}");
-                Console.WriteLine($"Home Team: {homeTeam}, Moneyline: {homeMoneyline}");
-                Console.WriteLine();
+                string awayMoneyline = moneylineNodes != null && moneylineNodes.Count > 0
+                    ? WebUtility.HtmlDecode(moneylineNodes[0].InnerText.Trim())
+                    : "";
+
+                string homeMoneyline = moneylineNodes != null && moneylineNodes.Count > 1
+                    ? WebUtility.HtmlDecode(moneylineNodes[1].InnerText.Trim())
+                    : "";
+                
+                //individual book line
+                
+                DataModel dataModel = new DataModel
+                {
+                    AwayTeam = awayTeam,
+                    HomeTeam = homeTeam,
+                    AwayMoneyLine = awayMoneyline,
+                    HomeMoneyLine = homeMoneyline,
+                    Time = time,
+                    Date = date
+                };
+
+                // Extract individual sportsbook moneylines
+                var bookNodes = row.SelectNodes(".//td[contains(@class, 'covers-CoversMatchups-centerAlignHelper')]");
+                if (bookNodes != null)
+                {
+                    foreach (var bookNode in bookNodes)
+                    {
+                        var bookName = bookNode.SelectSingleNode(".//img")?.Attributes["alt"]?.Value;
+                        var awayBookMoneyline = bookNode.SelectSingleNode(".//div[@class='td-cell away-cell']//a[contains(@class, 'moneyline')]/span[@class='American __american']");
+                        var homeBookMoneyline = bookNode.SelectSingleNode(".//div[@class='td-cell home-cell']//a[contains(@class, 'moneyline')]/span[@class='American __american']");
+
+                        if (!string.IsNullOrEmpty(bookName) && awayBookMoneyline != null && homeBookMoneyline != null)
+                        {
+                            string awayLine = WebUtility.HtmlDecode(awayBookMoneyline.InnerText.Trim());
+                            string homeLine = WebUtility.HtmlDecode(homeBookMoneyline.InnerText.Trim());
+                            
+                            //remove '+"
+                            awayLine = awayLine.Replace("+", "");
+                            homeLine = homeLine.Replace("+", "");
+
+                            dataModel.AwayMoneylines[bookName] = Int32.Parse(awayLine);
+                            dataModel.HomeMoneylines[bookName] = Int32.Parse(homeLine);
+                        }
+                    }
+                }
+                
+                dataModels.Add(dataModel);
+                }
             }
-        }
+        return dataModels;
     }
-
     static string GetHtmlContent(string url)
     {
         using (HttpClient client = new HttpClient())
