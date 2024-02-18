@@ -28,7 +28,7 @@ public class Team
     {
         if (moneylines.Count > 0)
         {
-            var bestBookLine = moneylines.OrderByDescending(kv => Math.Abs(kv.Value)).First();
+            var bestBookLine = moneylines.OrderByDescending(kv => kv.Value).First();
             BestBook = bestBookLine.Key;
             BestOdds = bestBookLine.Value;
         }
