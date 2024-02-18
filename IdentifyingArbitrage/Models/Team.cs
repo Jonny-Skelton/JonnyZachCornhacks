@@ -6,10 +6,21 @@ public class Team
     public string AmericanOdds { get; set; }
     public string BestBook { get; set; }
     public double BestOdds { get; set; }
+    
+    public string? ImgUrl { get; set; }
+    
+    public double ImpliedOdds
+    {
+        get
+        {
+            return CalculateImplied();
+        }
+    }
 
-    public Team(string name, Dictionary<string, int> moneylines)
+    public Team(string name, string americanOdds, Dictionary<string, int> moneylines)
     {
         Name = name;
+        AmericanOdds = americanOdds;
         SetBestBookAndOdds(moneylines);
     }
 
@@ -27,13 +38,6 @@ public class Team
             BestOdds = 0;
         }
     }
-    public double ImpliedOdds
-    {
-        get
-        {
-            return CalculateImplied();
-        }
-    }
 
     private double CalculateImplied()
     {
@@ -43,8 +47,8 @@ public class Team
             implied = 100 / ((BestOdds / 100) + 1);
         }else
         {
-            implied = 100 / ((100/BestOdds) + 1);
+            implied = 100 / ((100/Math.Abs(BestOdds)) + 1);
         }
-        return implied;
+        return Math.Round(implied, 2);
     }
 }

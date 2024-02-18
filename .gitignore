@@ -3,3 +3,17 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+.vs/BeatingTheOdds2024/FileContentIndex/09507eda-8bfb-44ab-b7c3-3ad2165565c8.vsidx
+# Ignore Visual Studio files
+.vs/
+*.suo
+*.user
+*.sln.docstates
+
+# Ignore build output
+bin/
+obj/
+
+# Ignore NuGet packages
+*.nuget.props
+*.nuget.targets
