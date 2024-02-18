@@ -1,4 +1,4 @@
-@page "/games"
+@page "/"
 @using IdentifyingArbitrage.Models
 @using IdentifyingArbitrage.Data
 @using System.Runtime.InteropServices
@@ -34,7 +34,7 @@ else
                 <td>@game.Teams[0].Name</td>
                 <td></td>
                 <td>@game.Teams[0].AmericanOdds</td>
-                <td>@game.Teams[0].ImpliedOdds</td>
+                <td>@Math.Round(@game.Teams[0].ImpliedOdds, 2) %</td>
             </tr>
             <tr>
                 <td>vs</td>
@@ -48,16 +48,12 @@ else
                 <td>@game.Teams[1].Name</td>
                 <td> </td>
                 <td>@game.Teams[1].AmericanOdds</td>
-                <td>@game.Teams[1].ImpliedOdds</td>
+                <td>@Math.Round(@game.Teams[1].ImpliedOdds, 2) %</td>
             </tr>
             </tbody>
         }
     </table>
 }
-
-<style>
-
-</style>
 
 @code {
 
@@ -90,3 +86,53 @@ else
 	    var team2MoneyLine = game.Teams[1].ImpliedOdds;
     }
 }
+<style>
+/* Styles for the table */
+.table {
+width: 100%;
+border-collapse: collapse;
+margin-top: 20px;
+}
+
+/* Styles for table headers */
+.table th {
+background-color: #f2f2f2;
+text-align: left;
+padding: 8px;
+}
+
+/* Styles for table cells */
+.table td {
+border: 1px solid #ddd;
+padding: 8px;
+}
+
+/* Alternate row background color */
+.table tbody tr:nth-child(even) {
+background-color: #f2f2f2;
+}
+
+/* Hover effect on rows */
+.table tbody tr:hover {
+background-color: #ddd;
+}
+
+/* Button styles */
+.button {
+background-color: #007bff;
+color: white;
+border: none;
+padding: 8px 16px;
+text-align: center;
+text-decoration: none;
+display: inline-block;
+font-size: 14px;
+margin-top: 20px;
+cursor: pointer;
+}
+
+/* Button hover effect */
+.button:hover {
+background-color: #0056b3;
+}
+</style>

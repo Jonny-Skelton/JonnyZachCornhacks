@@ -41,14 +41,14 @@ public class Team
     {
         double implied = 0;
         string temp = AmericanOdds.Replace("+", "");
-        double odds = Int32.Parse(temp);
+        double odds = double.Parse(temp);
         if (odds > 0)
         {
             implied = 100 / ((odds / 100) + 1);
         }else
         {
-            implied = 100 / ((100/odds) + 1);
+            implied = 100 / ((100/Math.Abs(odds)) + 1);
         }
-        return implied;
+        return Math.Round(implied, 2);
     }
 }
