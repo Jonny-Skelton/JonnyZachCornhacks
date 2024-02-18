@@ -1,21 +1,106 @@
-﻿@page "/arbitration"
+﻿@page "/arbitrage"
 @inject NavigationManager NavigationManager
+@using IdentifyingArbitrage.Models
+@inject GameService GameService
 
-<PageTitle>Arbitration Details</PageTitle>
+<PageTitle>Calculate Arbitrage</PageTitle>
 
-@if (NavigationManager.Uri.Contains("?"))
+<h1>Calculate Arbitrage</h1>
+
+@if (GameService.SelectedGame != null)
 {
-	var queryString = NavigationManager.Uri.Split('?')[1];
-	var parameters = queryString.Split('&');
-	if (parameters.Length >= 2)
-	{
-		var teamA = Uri.UnescapeDataString(parameters[0].Split('=')[1]);
-		var teamB = Uri.UnescapeDataString(parameters[1].Split('=')[1]);
-		<p>Team A: @teamA</p>
-		<p>Team B: @teamB</p>
-	}
-	else
-	{
-		<p>Invalid query string</p>
-	}
+	<table class="table">
+		<thead>
+		<tr>
+			<th>Name</th>
+			<th>Best Odds</th>
+			<th>Stake</th>
+			<th>Best Book</th>
+			<th>Payout</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td>@GameService.SelectedGame.Teams[0].Name</td>
+			<td><input type="number" value="@GameService.SelectedGame.Teams[0].BestOdds"/></td>
+			<td>Calculate Stake</td>
+			<td>@GameService.SelectedGame.Teams[0].BestBook</td>
+			<td>Calculate based on stake and odds</td>
+		</tr>
+		<tr>
+			<td>@GameService.SelectedGame.Teams[1].Name</td>
+			<td><input type="number" value="@GameService.SelectedGame.Teams[1].BestOdds" /></td>
+			<td>Calculate Stake</td>
+			<td>@GameService.SelectedGame.Teams[1].BestBook</td>
+			<td>Calculate based on stake and odds</td>
+		</tr>
+		</tbody>
+	</table>
+}
+else
+{
+	<table class="table">
+		<thead>
+		<tr>
+			<th>Name</th>
+			<th>Best Odds</th>
+			<th>Stake</th>
+			<th>Payout</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td>Team A</td>
+			<td><input type="number" value=""/></td>
+			<td>Calculate stake</td>
+			<td>Calculate based on stake and odds</td>
+		</tr>
+		<tr>
+			<td>Team B</td>
+			<td><input type="number" value="" /></td>
+			<td>Calculate based on stake and odds</td>
+		</tr>
+		</tbody>
+	</table>
+}
+
+<table class="table2">
+	<thead>
+	<tr>
+		<th></th>
+		<th></th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+		<th>Total Stake: $<input type="number"/></th>
+		<th>Total Payout: $</th>
+	</tr>
+	<tr>
+		<th><input type="button" value="Calculate"/></th>
+		<th>Total Profit: $</th>
+	</tr>
+	<tr>
+		<th></th>
+		<th>ROI:</th>
+	</tr>
+	</tbody>
+</table>
+
+
+<style>
+
+</style>
+
+@code {
+    [Parameter] public string team1Name { get; set; }
+    [Parameter] public string team2Name { get; set; }
+    [Parameter] public double team1MoneyLine { get; set; }
+    [Parameter] public double team2MoneyLine { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Use the captured parameters as needed
+        // You can access team1Name, team2Name, team1MoneyLine, and team2MoneyLine here
+    }
 }
