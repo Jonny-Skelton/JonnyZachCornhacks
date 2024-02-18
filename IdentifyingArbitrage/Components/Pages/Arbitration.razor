@@ -1,22 +1,41 @@
-﻿@page "/arbitration"
+﻿@page "/arbitrage"
+@using IdentifyingArbitrage.Models
 @inject NavigationManager NavigationManager
 @inject GameService GameService
 
-<PageTitle>Arbitration Details</PageTitle>
+<PageTitle>Calculate Arbitrage</PageTitle>
 
-@if (NavigationManager.Uri.Contains("?"))
+<h1>Calculate Arbitrage</h1>
+
+@if (GameService.SelectedGame != null)
 {
-	var queryString = NavigationManager.Uri.Split('?')[1];
-	var parameters = queryString.Split('&');
-	if (parameters.Length >= 2)
-	{
-		var teamA = Uri.UnescapeDataString(parameters[0].Split('=')[1]);
-		var teamB = Uri.UnescapeDataString(parameters[1].Split('=')[1]);
-		<p>Team A: @teamA</p>
-		<p>Team B: @teamB</p>
-	}
-	else
-	{
-		<p>Invalid query string</p>
-	}
+    <p>Team 1 Name: @GameService.SelectedGame.Teams[0].Name</p>
+    <p>Team 1 Best Odds: @GameService.SelectedGame.Teams[0].BestOdds</p>
+    <p>Team 1 Best Book: @GameService.SelectedGame.Teams[0].BestBook</p>
+
+    <p>Team 2 Name: @GameService.SelectedGame.Teams[1].Name</p>
+    <p>Team 2 Best Odds: @GameService.SelectedGame.Teams[1].BestOdds</p>
+    <p>Team 2 Best Book: @GameService.SelectedGame.Teams[1].BestBook</p>
+}
+else
+{
+    <p>No game selected</p>
+}
+
+
+<style>
+
+</style>
+
+@code {
+    [Parameter] public string team1Name { get; set; }
+    [Parameter] public string team2Name { get; set; }
+    [Parameter] public double team1MoneyLine { get; set; }
+    [Parameter] public double team2MoneyLine { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Use the captured parameters as needed
+        // You can access team1Name, team2Name, team1MoneyLine, and team2MoneyLine here
+    }
 }

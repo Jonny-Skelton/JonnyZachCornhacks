@@ -5,6 +5,7 @@
 @inject DataManager DataManager
 @inject NavigationManager NavigationManager
 @inject GameService GameService
+@rendermode InteractiveServer
 @attribute [StreamRendering]
 
 <PageTitle>Games</PageTitle>
@@ -42,7 +43,7 @@ else
                 <td>@game.Date at @game.Time</td>
                 <td></td>
                 <td>
-	            <a href="arbitration"><button @onclick="(e => PopulateVariables(game))" value="Arbitration">Calculate Arbitrage</button></a>
+                   <input type="button" @onclick="(e => PopulateVariables(e, game))" value="Calculate Arbitrage" />
 	            </td>
             </tr>
             <tr>
@@ -86,11 +87,9 @@ else
 
     }
 
-    private void PopulateVariables(Game game)
+    private void PopulateVariables(MouseEventArgs e,  Game game)
     {
-	    var team1Name = game.Teams[0].Name;
-	    var team2Name = game.Teams[1].Name;
-	    var team1MoneyLine = game.Teams[0].ImpliedOdds;
-	    var team2MoneyLine = game.Teams[1].ImpliedOdds;
+        GameService.SelectedGame = game;
+        NavigationManager.NavigateTo("arbitrage");
     }
 }

@@ -4,15 +4,16 @@ namespace IdentifyingArbitrage.Components;
 
 public class GameService
 {
-    private Game[] upcomingGames;
+    private Game[] UpcomingGames;
+    public Game SelectedGame { get; set; }
 
     public void SetUpcomingGames(Game[] games)
     {
-        upcomingGames = games;
+        UpcomingGames = games;
     }
 
     public Game[]? GetUpcomingGames()
     {
-        return upcomingGames;
+        return UpcomingGames;
     }
 }
