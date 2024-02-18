@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddScoped<DataManager>();
+builder.Services.AddSingleton<GameService>();
 
 var app = builder.Build();
 
