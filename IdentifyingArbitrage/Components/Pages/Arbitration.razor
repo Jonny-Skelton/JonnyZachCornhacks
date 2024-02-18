@@ -24,14 +24,14 @@
 		<tr>
 			 <td><img src="@GameService.SelectedGame.Teams[0].ImgUrl" alt="" width="20" height="20">  @GameService.SelectedGame.Teams[0].Name</td>
 			<td><input type="number" value="@GameService.SelectedGame.Teams[0].BestOdds" readonly="true" /></td>
-			<td>$ @TeamAStake</td>
+				<td>$ @Math.Round(@TeamAStake, 2)</td>
 			<td>@GameService.SelectedGame.Teams[0].BestBook</td>
 			<td>Calculate based on stake and odds</td>
 		</tr>
 		<tr>
 			<td><img src="@GameService.SelectedGame.Teams[1].ImgUrl" alt="" width="20" height="20">  @GameService.SelectedGame.Teams[0].Name</td>
 			<td><input type="number" value="@GameService.SelectedGame.Teams[1].BestOdds" readonly="true"/></td>
-			<td>$ @TeamBStake</td>
+				<td>$ @Math.Round(@TeamBStake, 2)</td>
 			<td>@GameService.SelectedGame.Teams[1].BestBook</td>
 			<td>Calculate based on stake and odds</td>
 		</tr>
@@ -53,13 +53,13 @@ else
 		<tr>
 			<td>Team A</td>
 			<td><input id="teamAoddsInput" type="number" @bind="TeamAOdds" /></td>
-			<td>$ @TeamAStake</td>
+				<td>$ @Math.Round(@TeamAStake, 2)</td>
 			<td>Calculate based on stake and odds</td>
 		</tr>
 		<tr>
 			<td>Team B</td>
 			<td><input id="teamAoddsInput" type="number" @bind="TeamBOdds" /></td>
-			<td>$ @TeamBStake</td>
+				<td>$ @Math.Round(@TeamBStake, 2)</td>
 			<td>Calculate based on stake and odds</td>
 		</tr>
 		</tbody>
@@ -76,15 +76,15 @@ else
 	<tbody>
 	<tr>
 		<th>Total Stake: $<input id="stakeInput" type="number" @bind="Stake"/></th>
-		<th>Total Payout: $ @TotalPayout</th>
+		<th>Total Payout: $ @Math.Round(@TotalPayout, 2)</th>
 	</tr>
 	<tr>
-		<th><input type="button" @onclick="e => CalculateArbitrage()" value="Calculate"/></th>
-		<th>Total Profit: $ @TotalProfit</th>
+		<th><input id="button" type="button" @onclick="e => CalculateArbitrage()" value="Calculate"/></th>
+		<th>Total Profit: $ @Math.Round(@TotalProfit, 2)</th>
 	</tr>
 	<tr>
 		<th></th>
-		<th>ROI: $ @ROI</th>
+		<th>ROI: @Math.Round(@ROI, 2)%</th>
 	</tr>
 	</tbody>
 </table>
