@@ -9,18 +9,83 @@
 
 @if (GameService.SelectedGame != null)
 {
-    <p>Team 1 Name: @GameService.SelectedGame.Teams[0].Name</p>
-    <p>Team 1 Best Odds: @GameService.SelectedGame.Teams[0].BestOdds</p>
-    <p>Team 1 Best Book: @GameService.SelectedGame.Teams[0].BestBook</p>
-
-    <p>Team 2 Name: @GameService.SelectedGame.Teams[1].Name</p>
-    <p>Team 2 Best Odds: @GameService.SelectedGame.Teams[1].BestOdds</p>
-    <p>Team 2 Best Book: @GameService.SelectedGame.Teams[1].BestBook</p>
+	<table class="table">
+		<thead>
+		<tr>
+			<th>Name</th>
+			<th>Best Odds</th>
+			<th>Stake</th>
+			<th>Best Book</th>
+			<th>Payout</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td>@GameService.SelectedGame.Teams[0].Name</td>
+			<td><input type="number" value="@GameService.SelectedGame.Teams[0].BestOdds"/></td>
+			<td>Calculate Stake</td>
+			<td>@GameService.SelectedGame.Teams[0].BestBook</td>
+			<td>Calculate based on stake and odds</td>
+		</tr>
+		<tr>
+			<td>@GameService.SelectedGame.Teams[1].Name</td>
+			<td><input type="number" value="@GameService.SelectedGame.Teams[1].BestOdds" /></td>
+			<td>Calculate Stake</td>
+			<td>@GameService.SelectedGame.Teams[1].BestBook</td>
+			<td>Calculate based on stake and odds</td>
+		</tr>
+		</tbody>
+	</table>
 }
 else
 {
-    <p>No game selected</p>
+	<table class="table">
+		<thead>
+		<tr>
+			<th>Name</th>
+			<th>Best Odds</th>
+			<th>Stake</th>
+			<th>Payout</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td>Team A</td>
+			<td><input type="number" value=""/></td>
+			<td>Calculate stake</td>
+			<td>Calculate based on stake and odds</td>
+		</tr>
+		<tr>
+			<td>Team B</td>
+			<td><input type="number" value="" /></td>
+			<td>Calculate based on stake and odds</td>
+		</tr>
+		</tbody>
+	</table>
 }
+
+<table class="table2">
+	<thead>
+	<tr>
+		<th></th>
+		<th></th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+		<th>Total Stake: $<input type="number"/></th>
+		<th>Total Payout: $</th>
+	</tr>
+	<tr>
+		<th><input type="button" value="Calculate"/></th>
+		<th>Total Profit: $</th>
+	</tr>
+	<tr>
+		<th></th>
+		<th>ROI:</th>
+	</tr>
+	</tbody>
+</table>
 
 
 <style>
@@ -39,17 +104,3 @@ else
         // You can access team1Name, team2Name, team1MoneyLine, and team2MoneyLine here
     }
 }
-<h1>Arbitration</h1>
-
-<div>
-	<h2>Calculate Your Earnings</h2>
-	<form>
-			<tr>
-				<th>Team 1</th>
-
-			</tr>
-			<tr>
-				<th>Team 2</th>
-			</tr>
-	</form>
-</div>
